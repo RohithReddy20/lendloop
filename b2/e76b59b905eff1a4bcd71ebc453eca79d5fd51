@@ -1,0 +1,45 @@
+package.json
+  s_ad5dc38e87820a::t_b8c052d61352c4 22,27,32,34
+  s_ad5dc38e87820a::t_7e29afc4bbdee1 33
+  s_ad5dc38e87820a::t_beb102205f9fa1 2,15-16,30
+  s_ad5dc38e87820a::t_88d70c1def50ff 9-12
+  s_ad5dc38e87820a::t_d691751055214a 1,3-8,13-14,17-21,23-26,28-29,31,35-37
+eslint.config.mjs
+  s_ad5dc38e87820a::t_d691751055214a 1-14,16-19
+  s_ad5dc38e87820a::t_9aa6704a623809 15
+pnpm-workspace.yaml
+  s_ad5dc38e87820a::t_9b09c2ccb9cf3e 2
+  s_ad5dc38e87820a::t_d691751055214a 1,3-4
+AGENTS.md
+  s_ad5dc38e87820a::t_d691751055214a 1-9
+tsconfig.json
+  s_ad5dc38e87820a::t_d691751055214a 1-3,9-25,32-41,45
+  s_ad5dc38e87820a::t_201ecfd7fa6629 4-8,26-31,42-44
+.gitignore
+  s_ad5dc38e87820a::t_d691751055214a 1-34,37-43
+  s_ad5dc38e87820a::t_313cf5e488d3e4 35-36,44-46
+next.config.ts
+  s_ad5dc38e87820a::t_e72628f8530401 8
+  s_ad5dc38e87820a::t_d691751055214a 1-2,11,16-26
+  s_ad5dc38e87820a::t_201ecfd7fa6629 3-7,9-10,12-15
+.env.example
+  s_ad5dc38e87820a::t_f4ae6e6fb733ec 1-15
+pnpm-lock.yaml
+  s_ad5dc38e87820a::t_ca517c3ffb0ef9 1-5158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b2e76b59b905eff1a4bcd71ebc453eca79d5fd51",
+  "prompts": {},
+  "sessions": {
+    "s_ad5dc38e87820a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "856fe3af-7903-4bdf-945c-6d39ac8d07ed",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Rohith <rohithreddyrohi18@gmail.com>"
+    }
+  }
+}
