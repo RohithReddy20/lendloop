@@ -1,0 +1,67 @@
+name: lendloop
+
+
+# Local automation stack for LendLoop:
+#   n8n      http://localhost:5678   workflow engine
+#   mailpit  http://localhost:8025   catches every email n8n sends (no real mail leaves your machine)
+#
+#   cp n8n/.env.example n8n/.env   # then fill in the secrets
+#   docker compose up -d
+#
+# Secrets come from n8n/.env (git-ignored). Nothing secret is baked into the
+# images, the compose file, or the exported workflow JSON.
+
+x-n8n-env: &n8n-env
+  env_file: n8n/.env
+  environment:
+    # Code nodes need Node's crypto module for HMAC signing/verification.
+    NODE_FUNCTION_ALLOW_BUILTIN: crypto
+    # Workflows read the HMAC secrets / Convex URL via $env (n8n 2.x blocks this by default).
+    N8N_BLOCK_ENV_ACCESS_IN_NODE: "false"
+    N8N_DIAGNOSTICS_ENABLED: "false"
+    N8N_PERSONALIZATION_ENABLED: "false"
+    N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
+    EXECUTIONS_DATA_PRUNE: "true"
+    EXECUTIONS_DATA_MAX_AGE: "336" # hours (14 days) – execution logs contain names/emails
+    GENERIC_TIMEZONE: ${TZ:-UTC}
+    TZ: ${TZ:-UTC}
+
+services:
+  n8n-init:
+    # One-shot bootstrap: creates the SMTP credential from env vars and imports the
+    # workflows from ./n8n/workflows on first start. Re-run with N8N_FORCE_REIMPORT=true.
+    image: docker.n8n.io/n8nio/n8n:2.46.6
+    <<: *n8n-env
+    entrypoint: ["/bin/sh", "/bootstrap/init.sh"]
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./n8n/workflows:/workflows:ro
+      - ./n8n/init.sh:/bootstrap/init.sh:ro
+    restart: "no"
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:2.46.6
+    <<: *n8n-env
+    ports:
+      - "127.0.0.1:5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    extra_hosts:
+      # Lets n8n reach a Convex backend running on the host (npx convex dev, local mode).
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      n8n-init:
+        condition: service_completed_successfully
+      mailpit:
+        condition: service_started
+    restart: unless-stopped
+
+  mailpit:
+    image: axllent/mailpit:v1.33.0
+    ports:
+      - "127.0.0.1:8025:8025" # web UI
+      - "127.0.0.1:1025:1025" # SMTP
+    restart: unless-stopped
+
+volumes:
+  n8n_data:

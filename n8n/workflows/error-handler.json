@@ -1,0 +1,227 @@
+{
+  "id": "LendLoopErrors01",
+  "name": "LendLoop · Error handler",
+  "active": false,
+  "nodes": [
+    {
+      "id": "088f6ccd-6962-57c2-895e-190e42e57196",
+      "name": "About",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        -260
+      ],
+      "parameters": {
+        "content": "## LendLoop · Error handler\nSet as the *Error workflow* of the other LendLoop workflows. When one of their executions fails after its retries:\n1. Logs a structured summary\n2. Emails ops (`LENDLOOP_OPS_EMAIL`)\n3. Reports the failure to Convex, where it shows in the admin **Automation health** panel. De-duplicated by execution id.",
+        "width": 440,
+        "height": 280,
+        "color": 3
+      }
+    },
+    {
+      "id": "cf5bb65d-3081-5247-b6bd-f5fe4820b120",
+      "name": "On workflow failure",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "b83e42fa-2f4d-5bf0-89f2-4b072c362a7c",
+      "name": "Summarize failure",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// Runs when any LendLoop workflow execution fails. Truncates messages; no payload data is copied.\nconst { execution = {}, workflow = {}, trigger } = $json;\nconst message = String(execution.error?.message || trigger?.error?.message || 'Unknown error').slice(0, 500);\nconst summary = {\n  type: 'workflow.failure',\n  executionId: String(execution.id || `trigger-${Date.now()}`),\n  workflowName: String(workflow.name || 'unknown workflow'),\n  nodeName: execution.lastNodeExecuted || undefined,\n  message,\n};\nconsole.error('[lendloop:workflow-failure]', JSON.stringify(summary));\nreturn [{ json: { ...summary, executionUrl: execution.url || null } }];\n"
+      }
+    },
+    {
+      "id": "ac8c63ae-1177-55f9-954c-e304431f2dce",
+      "name": "Build ops alert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        -120
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: {\n  to: $env.LENDLOOP_OPS_EMAIL,\n  subject: `[LendLoop ops] Workflow failed: ${$json.workflowName}`,\n  text: `Workflow: ${$json.workflowName}\\nNode: ${$json.nodeName || '-'}\\nExecution: ${$json.executionId}\\n` +\n        `${$json.executionUrl ? 'Open: ' + $json.executionUrl + '\\n' : ''}\\nError: ${$json.message}`,\n}}];\n"
+      }
+    },
+    {
+      "id": "e0643a76-62b5-5e3b-8332-433233993cbc",
+      "name": "Email ops",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        680,
+        -120
+      ],
+      "parameters": {
+        "fromEmail": "={{ $env.LENDLOOP_NOTIFY_FROM }}",
+        "toEmail": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.text }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "credentials": {
+        "smtp": {
+          "id": "LendLoopSmtp0001",
+          "name": "LendLoop SMTP"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "c9b57f5b-841b-51fd-9ba5-6f648578af4e",
+      "name": "Build failure report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        120
+      ],
+      "parameters": {
+        "jsCode": "const { type, executionId, workflowName, nodeName, message } = $json;\nreturn { json: { type, executionId, workflowName, nodeName, message } };\n",
+        "mode": "runOnceForEachItem"
+      }
+    },
+    {
+      "id": "35fcfa79-6ae4-5708-9027-c1bbc0f54733",
+      "name": "Sign request for Convex",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        120
+      ],
+      "parameters": {
+        "jsCode": "// Signs the request body for Convex: v1=hex(HMAC_SHA256(N8N_TO_LENDLOOP_SECRET, `${timestamp}.${body}`)).\n// The secret is read from the environment and never appears in the workflow JSON.\nconst crypto = require('crypto');\nconst secret = $env.N8N_TO_LENDLOOP_SECRET;\nif (!secret) throw new Error('N8N_TO_LENDLOOP_SECRET is not configured');\nconst body = JSON.stringify($json);\nconst timestamp = String(Math.floor(Date.now() / 1000));\nconst signature = 'v1=' + crypto.createHmac('sha256', secret).update(`${timestamp}.${body}`).digest('hex');\nreturn { json: { body, timestamp, signature } };\n",
+        "mode": "runOnceForEachItem"
+      }
+    },
+    {
+      "id": "53f86e6e-8081-57d7-88cf-b9f3e0620dbc",
+      "name": "Report failure to Convex",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        900,
+        120
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.LENDLOOP_CONVEX_SITE_URL }}/n8n/workflow-failure",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-LendLoop-Timestamp",
+              "value": "={{ $json.timestamp }}"
+            },
+            {
+              "name": "X-LendLoop-Signature",
+              "value": "={{ $json.signature }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "On workflow failure": {
+      "main": [
+        [
+          {
+            "node": "Summarize failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize failure": {
+      "main": [
+        [
+          {
+            "node": "Build ops alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Build failure report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build ops alert": {
+      "main": [
+        [
+          {
+            "node": "Email ops",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build failure report": {
+      "main": [
+        [
+          {
+            "node": "Sign request for Convex",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sign request for Convex": {
+      "main": [
+        [
+          {
+            "node": "Report failure to Convex",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "pinData": {},
+  "tags": []
+}
