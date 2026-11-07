@@ -56,7 +56,7 @@ pnpm install
 ### 2. Clerk
 
 1. Create a Clerk application (email and/or Google sign-in).
-2. In **Configure → JWT templates**, create a template from the **Convex** preset. Keep its name as `convex`. The preset includes the `name` and `email` claims LendLoop uses.
+2. In **Configure → JWT templates**, create a template from the **Convex** preset. Keep its name as `convex`. LendLoop only reads `aud: "convex"`, `name`, `given_name`, `family_name` and `email`, so you can delete the preset's other claims (picture, phone and so on) to keep the token minimal.
 3. Copy the **API keys** into `.env.local` (see `.env.example`):
    ```bash
    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
