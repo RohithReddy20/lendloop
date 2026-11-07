@@ -1,0 +1,40 @@
+convex/_generated/api.js
+  s_ad5dc38e87820a::t_a489c21798185e 1-23
+convex/tools.ts
+  s_ad5dc38e87820a::t_08f51d3451e933 1-215
+convex/_generated/server.js
+  s_ad5dc38e87820a::t_a489c21798185e 1-94,101
+  s_ad5dc38e87820a::t_50d25592810830 95-100
+convex/admin.ts
+  s_ad5dc38e87820a::t_8d599e65d2d820 1-22,25-140
+  s_ad5dc38e87820a::t_6483607366b161 23-24
+convex/_generated/server.d.ts
+  s_ad5dc38e87820a::t_50d25592810830 25-35,109-115
+  s_ad5dc38e87820a::t_a489c21798185e 1-24,36-108,116-162
+convex/_generated/api.d.ts
+  s_ad5dc38e87820a::t_50d25592810830 11-77
+  s_ad5dc38e87820a::t_a489c21798185e 1-10
+convex/seed.ts
+  s_ad5dc38e87820a::t_7dba5e4e1b44e9 1-63
+convex/_generated/dataModel.d.ts
+  s_ad5dc38e87820a::t_a489c21798185e 1-60
+convex/loans.ts
+  s_ad5dc38e87820a::t_06317f738475a3 1-20,31-47,49-239
+  s_ad5dc38e87820a::t_6483607366b161 21-30,48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "72431685675185fe40e0c6e8b7eb7c27e9d03e1b",
+  "prompts": {},
+  "sessions": {
+    "s_ad5dc38e87820a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "856fe3af-7903-4bdf-945c-6d39ac8d07ed",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Rohith <rohithreddyrohi18@gmail.com>"
+    }
+  }
+}
