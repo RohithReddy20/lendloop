@@ -1,0 +1,35 @@
+n8n/.env.example
+  s_ad5dc38e87820a::t_313cf5e488d3e4 1-27
+scripts/setup-local.sh
+  s_ad5dc38e87820a::t_f4ae6e6fb733ec 1-36
+n8n/workflows/error-handler.json
+  s_ad5dc38e87820a::t_b5573ac37fc8ae 1-227
+n8n/init.sh
+  s_ad5dc38e87820a::t_9121c6dcec2b08 5,41-44
+  s_ad5dc38e87820a::t_313cf5e488d3e4 1-4,6-40,45-47
+docker-compose.yml
+  s_ad5dc38e87820a::t_1c56707c9456dc 1-3
+  s_ad5dc38e87820a::t_632aa4597285c7 60
+  s_ad5dc38e87820a::t_313cf5e488d3e4 4-59,61-67
+n8n/workflows/loan-event-notifications.json
+  s_ad5dc38e87820a::t_be662be53a3e89 16,134
+  s_ad5dc38e87820a::t_b5573ac37fc8ae 1-15,17-133,135-476
+n8n/workflows/overdue-reminders.json
+  s_ad5dc38e87820a::t_b5573ac37fc8ae 1-447
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "faafb07ba45dc82490baeea2bd046949c80e15e6",
+  "prompts": {},
+  "sessions": {
+    "s_ad5dc38e87820a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "856fe3af-7903-4bdf-945c-6d39ac8d07ed",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Rohith <rohithreddyrohi18@gmail.com>"
+    }
+  }
+}
