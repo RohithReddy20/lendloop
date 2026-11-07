@@ -1,0 +1,21 @@
+src/app/(app)/layout.tsx
+  s_ad5dc38e87820a::t_8d5f463747f046 1,5-8
+src/proxy.ts
+  s_ad5dc38e87820a::t_edda64a716a6c7 1,3-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3e225ca5f017761f1f19cb746fe54529045dfddf",
+  "prompts": {},
+  "sessions": {
+    "s_ad5dc38e87820a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "856fe3af-7903-4bdf-945c-6d39ac8d07ed",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Rohith <rohithreddyrohi18@gmail.com>"
+    }
+  }
+}
