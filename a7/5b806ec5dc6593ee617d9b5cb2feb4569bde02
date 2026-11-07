@@ -1,0 +1,35 @@
+convex/users.ts
+  s_ad5dc38e87820a::t_10873d3300f911 1-78
+convex/lib/availability.ts
+  s_ad5dc38e87820a::t_08f51d3451e933 1-35
+convex/lib/constants.ts
+  s_ad5dc38e87820a::t_7570f7830b9f7c 1-55
+convex/tsconfig.json
+  s_ad5dc38e87820a::t_a489c21798185e 1-25
+convex/lib/dates.ts
+  s_ad5dc38e87820a::t_9934f57e5d0d24 1-29
+convex/schema.ts
+  s_ad5dc38e87820a::t_7570f7830b9f7c 1-22,26-70,74-90
+  s_ad5dc38e87820a::t_be662be53a3e89 71-73
+  s_ad5dc38e87820a::t_10873d3300f911 23-25
+convex/lib/auth.ts
+  s_ad5dc38e87820a::t_9934f57e5d0d24 1-93
+convex/auth.config.ts
+  s_ad5dc38e87820a::t_7570f7830b9f7c 1-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a75b806ec5dc6593ee617d9b5cb2feb4569bde02",
+  "prompts": {},
+  "sessions": {
+    "s_ad5dc38e87820a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "856fe3af-7903-4bdf-945c-6d39ac8d07ed",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Rohith <rohithreddyrohi18@gmail.com>"
+    }
+  }
+}
